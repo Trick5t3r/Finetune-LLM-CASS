@@ -30,11 +30,12 @@ DETAILED_PREFIX = (
 
 # Fonction pour charger et préparer le corpus
 def load_corpus(data_dir, start_index=0, max_files=10):
+    print(f"Chargement des fichiers...")
     texts = []
     summaries = []
     filenames = sorted(os.listdir(data_dir))
     for idx, filename in enumerate(filenames[start_index:start_index + max_files]):
-        print(f"Chargement des fichiers ({start_index + idx + 1}/{start_index + max_files})")
+        #print(f"Chargement des fichiers ({start_index + idx + 1}/{start_index + max_files})")
         if filename.endswith(".story"):
             with open(os.path.join(data_dir, filename), 'r', encoding='utf-8') as f:
                 content = f.read()

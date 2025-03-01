@@ -8,7 +8,7 @@ from transformers import T5ForConditionalGeneration, T5Tokenizer
 NUMBER_OF_FILES = 100
 
 # Chemin vers le modèle et les données
-MODEL_DIR = "./finetuned_sml_V2"  # Modèle fine-tuné
+MODEL_DIR = "./finetuned_sml_V3_llm"  # Modèle fine-tuné
 DATA_DIR = "./CASS-dataset/cleaned_files_llm/"  # Dossier contenant les fichiers CSV
 
 # Charger le modèle et le tokenizer
