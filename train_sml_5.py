@@ -16,7 +16,7 @@ import pandas as pd
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 print("Initialisation...")
-
+print("Device :", device)
 # Paramètres et chemins
 NUMBER_OF_FILES = 5000
 NUMBER_OF_FILES_TEST = 1000
@@ -80,10 +80,10 @@ def preprocess_function(examples, max_total_tokens=2048):
     print("Prétraitement des données...")
     inputs = [DETAILED_PREFIX + doc for doc in examples["text"]]
     model_inputs = tokenizer(inputs, max_length=max_total_tokens-512, truncation=True, padding="max_length")
-    
     labels = tokenizer(examples["summary"], max_length=512, truncation=True, padding="max_length")
     model_inputs["labels"] = labels["input_ids"]
-    return model_inputs
+    return model_inputs  # Seules les colonnes tokenisées sont retournées
+
 
 if __name__ == "__main__":
     print("Démarrage du script...")
@@ -114,7 +114,8 @@ if __name__ == "__main__":
         label_names=["labels"],
         warmup_steps=500,
         metric_for_best_model="eval_loss",
-        greater_is_better=False
+        greater_is_better=False,
+        remove_unused_columns=True
     )
 
     # Initialisation du DataCollator et des callbacks (EarlyStopping)
