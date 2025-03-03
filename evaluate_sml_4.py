@@ -9,7 +9,7 @@ NUMBER_OF_FILES = 100
 
 # Chemin vers le modèle et les données
 MODEL_DIR = "./finetuned_sml_V3_llm"  # Modèle fine-tuné
-DATA_DIR = "./CASS-dataset/cleaned_files_llm/"  # Dossier contenant les fichiers CSV
+DATA_DIR = "./cleaned_files_llm/"  # Dossier contenant les fichiers CSV
 
 # Charger le modèle et le tokenizer
 print("\nChargement du modèle...")

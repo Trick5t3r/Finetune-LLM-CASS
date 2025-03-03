@@ -17,9 +17,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Initialisation...")
 
 # Paramètres et chemins
-NUMBER_OF_FILES = 5000
-NUMBER_OF_FILES_TEST = 1000
-DATA_DIR = "./CASS-dataset/cleaned_files/"
+NUMBER_OF_FILES = 100
+NUMBER_OF_FILES_TEST = 10
+DATA_DIR = "./cleaned_files/"
 
 # Préfixe détaillé utilisé pour l'entraînement ET l'inférence
 DETAILED_PREFIX = (
