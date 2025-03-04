@@ -123,7 +123,8 @@ training_args = Seq2SeqTrainingArguments(
     save_strategy="epoch",
     label_names=["labels"],
     warmup_steps=500,
-    metric_for_best_model="eval_rougeL"
+    metric_for_best_model="eval_loss",
+    greater_is_better=False
 )
 
 # Initialisation du DataCollator et des callbacks (EarlyStopping)
@@ -146,6 +147,6 @@ print("Entraînement en cours...")
 trainer.train()
 
 # Sauvegarde du modèle fine-tuné et du tokenizer
-trainer.save_model("./finetuned_sml_V3_llm")
-tokenizer.save_pretrained("./finetuned_sml_V3_llm")
+trainer.save_model("./finetuned_sml_V4_llm")
+tokenizer.save_pretrained("./finetuned_sml_V4_llm")
 print("Fine-tuning terminé et modèle sauvegardé.")
