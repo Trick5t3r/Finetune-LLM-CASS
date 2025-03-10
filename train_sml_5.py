@@ -115,7 +115,7 @@ training_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=4,
     weight_decay=0.01,
     save_total_limit=2,
-    num_train_epochs=5,
+    num_train_epochs=4,
     predict_with_generate=True,
     fp16=torch.cuda.is_available(),
     logging_dir='./logs',
@@ -123,8 +123,7 @@ training_args = Seq2SeqTrainingArguments(
     save_strategy="epoch",
     label_names=["labels"],
     warmup_steps=500,
-    metric_for_best_model="eval_loss",
-    greater_is_better=False
+    metric_for_best_model="eval_loss"
 )
 
 # Initialisation du DataCollator et des callbacks (EarlyStopping)
