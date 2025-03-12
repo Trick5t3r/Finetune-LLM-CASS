@@ -26,6 +26,7 @@ parser = argparse.ArgumentParser(description="Fine-tune T5 model for text summar
 parser.add_argument("--save_path", type=str, default="./outputs/models/finetuned_sml", help="Chemin de sauvegarde du modèle fine-tuné")
 parser.add_argument("--model_name", type=str, default="t5-base", help="Modele de base à utiliser")
 parser.add_argument("--nb_epochs", type=int, default=4, help="Nombre d'epochs d'entraînement")
+parser.add_argument("--summary_type", type=str, default="reference_summary", help="Souhaitez-vous utiliser: generated_summary/reference_summary ")
 args = parser.parse_args()
 
 # Paramètres et chemins
@@ -58,7 +59,7 @@ def load_all_corpus_csv(data_dir, total_max_rows=TOTAL_MAX_ROWS):
         file_path = os.path.join(data_dir, filename)
         df = pd.read_csv(file_path)
         texts.extend(df["text"].tolist())
-        summaries.extend(df["generated_summary"].tolist())
+        summaries.extend(df[args.summary_type].tolist())
     if total_max_rows is not None:
         texts = texts[:total_max_rows]
         summaries = summaries[:total_max_rows]

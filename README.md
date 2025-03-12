@@ -38,7 +38,7 @@ cd ..
 ### 2️⃣ Fine-tune the model
 Train the model using the following command:
 ```bash
-python Train/train_sml_last_version.py --model_name t5-base --nb_epoch 4 --save_path ./outputs/models/finetuned_sml
+python Train/train_sml_last_version.py --model_name t5-base --nb_epoch 4 --summary_type reference_summary --save_path ./outputs/models/finetuned_sml
 ```
 
 ### 3️⃣ Evaluate the model
