@@ -4,7 +4,7 @@
 source .venv/bin/activate
 
 # Définition des paramètres
-model_names=("t5-base" "mt5-base")
+model_names=("t5-base" "google/mt5-base")
 nb_epochs=(3 5 10)
 summary_types=("reference_summary" "generated_summary")
 
