@@ -38,7 +38,7 @@ NUMBER_OF_FILES = 5000
 NUMBER_OF_FILES_TEST = 1000
 
 # Chemin vers les fichiers texte
-DATA_DIR = "../data/cleaned_files/" 
+DATA_DIR = "./data/cleaned_files/" 
 
 # Charger et préparer les données
 def load_corpus(data_dir, start_index=0, max_files=10):

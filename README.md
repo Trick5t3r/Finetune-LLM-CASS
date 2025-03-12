@@ -31,14 +31,14 @@ pip install -r requirements.txt
 ### 1️⃣ Preprocess the dataset
 ```bash
 cd data
-unzip cleaned_files_llm.zip -d cleaned_files_llm
+unzip cleaned_files_llm.zip
 cd ..
 ```
 
 ### 2️⃣ Fine-tune the model
 Train the model using the following command:
 ```bash
-python train.py --model Qwen2.5-0.5B-Instruct --dataset data/processed
+python Train/train_sml_last_version.py --model_name t5-base --nb_epoch 4 --save_path ./outputs/models/finetuned_sml
 ```
 
 ### 3️⃣ Evaluate the model

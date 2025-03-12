@@ -22,7 +22,7 @@ print("Device :", device)
 
 # Paramètres et chemins
 TOTAL_MAX_ROWS = 5000
-DATA_DIR = "./cleaned_files_llm/"  # Dossier contenant vos fichiers CSV
+DATA_DIR = "./data/cleaned_files_llm/"  # Dossier contenant vos fichiers CSV
 DETAILED_PREFIX = (
     "Vous êtes un expert en synthèse de texte. Veuillez fournir un résumé détaillé et complet du texte suivant. "
     "Assurez-vous d'inclure tous les points clés, les détails importants et l'essence générale du contenu. "

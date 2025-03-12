@@ -6,3 +6,6 @@ datasets
 evaluate
 transformers
 peft
+absl-py
+rouge-score
+sentencepiece
