@@ -18,8 +18,8 @@ cd Finetune-LLM-CASS
 ```
 #### 2. Create a virtual environment (optional but recommended)
 ```bash
-python -m venv env
-source env/bin/activate  # On Windows: env\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: env\Scripts\activate
 ```
 #### 3. Install dependencies
 ```bash
@@ -32,6 +32,7 @@ pip install -r requirements.txt
 ```bash
 cd data
 unzip cleaned_files_llm.zip -d cleaned_files_llm
+cd ..
 ```
 
 ### 2️⃣ Fine-tune the model
