@@ -9,3 +9,5 @@ peft
 absl-py
 rouge-score
 sentencepiece
+datasets
+transformers
