@@ -1,24 +1,43 @@
 import os
+import argparse
 import torch
 import evaluate
 import pandas as pd
 from datasets import Dataset
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
-TOTAL_MAX_ROWS = 100
+TOTAL_MAX_ROWS_DEFAULT = 100
 
-# Chemin vers le modèle et les données
-MODEL_DIR = "./finetuned_sml_V4_llm"  # Modèle fine-tuné
-DATA_DIR = "./cleaned_files_llm/"  # Dossier contenant les fichiers CSV
+# Argument parser pour récupérer le chemin du modèle depuis la ligne de commande
+parser = argparse.ArgumentParser()
+parser.add_argument("--model_dir", type=str, required=True, help="Chemin du modèle fine-tuné")
+parser.add_argument("--total_max_rows", type=str, default= TOTAL_MAX_ROWS_DEFAULT, help="Nombre de tests")
+parser.add_argument("--data_dir", type=str, default="../data/cleaned_files_llm/", help="Dossier contenant les fichiers CSV")
+args = parser.parse_args()
+
+MODEL_DIR = args.model_dir
+DATA_DIR = args.data_dir
+TOTAL_MAX_ROWS = args.total_max_rows
+
+# Créer un fichier de log basé sur le nom du modèle
+model_name = os.path.basename(os.path.normpath(MODEL_DIR))
+log_filename = f"/outputs/results/{model_name}_benchmarks.txt"
+log_file = open(log_filename, "w", encoding="utf-8")
+
+
+def log(message):
+    print(message)
+    log_file.write(message + "\n")
+    log_file.flush()
 
 # Charger le modèle et le tokenizer
-print("\nChargement du modèle...")
+log("\nChargement du modèle...")
 model = T5ForConditionalGeneration.from_pretrained(MODEL_DIR)
 tokenizer = T5Tokenizer.from_pretrained(MODEL_DIR)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
-print(f"Modèle chargé sur : {device}")
+log(f"Modèle chargé sur : {device}")
 
 # Charger le corpus à partir des fichiers CSV
 def load_all_corpus_csv(data_dir, total_max_rows=TOTAL_MAX_ROWS):
@@ -45,9 +64,9 @@ def load_all_corpus_csv(data_dir, total_max_rows=TOTAL_MAX_ROWS):
         "reference_summary": reference_summaries
     })
 
-print("\nChargement des données...")
+log("\nChargement des données...")
 eval_dataset = load_all_corpus_csv(DATA_DIR, total_max_rows=TOTAL_MAX_ROWS)
-print(f"Nombre d'exemples chargés : {len(eval_dataset)}")
+log(f"Nombre d'exemples chargés : {len(eval_dataset)}")
 
 # Fonction de génération de résumé avec le modèle
 def generate_summary(text, max_total_tokens=2048):
@@ -86,7 +105,7 @@ def generate_summary(text, max_total_tokens=2048):
     return tokenizer.decode(summary_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
 
 # Charger les métriques ROUGE et BLEU
-print("\nÉvaluation du modèle...")
+log("\nÉvaluation du modèle...")
 rouge_metric = evaluate.load("rouge")
 bleu_metric = evaluate.load("bleu")
 
@@ -116,14 +135,14 @@ for idx, example in enumerate(eval_dataset):
         # Générer le résumé avec votre modèle
         model_summary = generate_summary(input_text).strip()
         
-        print("\n" + "="*50)
-        print(f"Exemple #{idx+1}/{len(eval_dataset)}")
-        print("\nRésumé généré par le modèle :")
-        print(model_summary)
-        print("\nRésumé généré par le LLM :")
-        print(llm_summary)
-        print("\nRésumé de référence :")
-        print(reference_summary)
+        log("\n" + "="*50)
+        log(f"Exemple #{idx+1}/{len(eval_dataset)}")
+        log("\nRésumé généré par le modèle :")
+        log(model_summary)
+        log("\nRésumé généré par le LLM :")
+        log(llm_summary)
+        log("\nRésumé de référence :")
+        log(reference_summary)
         
         # Calcul des métriques pour la comparaison avec le résumé de référence
         rouge_result_ref = rouge_metric.compute(predictions=[model_summary], references=[reference_summary])
@@ -143,7 +162,7 @@ for idx, example in enumerate(eval_dataset):
         rougeL_scores_llm.append(rouge_result_llm['rougeL'])
         bleu_scores_llm.append(bleu_result_llm['bleu'])
 
-        # Calcul des métriques pour la comparaison avec le résumé généré par le LLM et celui de ref
+        # Calcul des métriques pour la comparaison entre le résumé généré par le LLM et celui de référence
         rouge_result_llm_ref = rouge_metric.compute(predictions=[llm_summary], references=[reference_summary])
         bleu_result_llm_ref = bleu_metric.compute(predictions=[llm_summary], references=[reference_summary])
         
@@ -152,12 +171,13 @@ for idx, example in enumerate(eval_dataset):
         rougeL_scores_llm_ref.append(rouge_result_llm_ref['rougeL'])
         bleu_scores_llm_ref.append(bleu_result_llm_ref['bleu'])
         
-        print(f"\nScores pour cet exemple :")
-        print(f" - (LLM vs Référence) ROUGE-L: {rouge_result_llm_ref['rougeL']:.4f} | BLEU: {bleu_result_llm_ref['bleu']:.4f}")
-        print(f" - (Modèle vs Référence) ROUGE-L: {rouge_result_ref['rougeL']:.4f} | BLEU: {bleu_result_ref['bleu']:.4f}")
-        print(f" - (Modèle vs LLM) ROUGE-L: {rouge_result_llm['rougeL']:.4f} | BLEU: {bleu_result_llm['bleu']:.4f}")
+        log(f"\nScores pour cet exemple :")
+        log(f" - (LLM vs Référence) ROUGE-L: {rouge_result_llm_ref['rougeL']:.4f} | BLEU: {bleu_result_llm_ref['bleu']:.4f}")
+        log(f" - (Modèle vs Référence) ROUGE-L: {rouge_result_ref['rougeL']:.4f} | BLEU: {bleu_result_ref['bleu']:.4f}")
+        log(f" - (Modèle vs LLM) ROUGE-L: {rouge_result_llm['rougeL']:.4f} | BLEU: {bleu_result_llm['bleu']:.4f}")
     except:
         pass
+
 # Calcul des scores moyens
 avg_rouge1_ref = sum(rouge1_scores_ref) / len(rouge1_scores_ref)
 avg_rouge2_ref = sum(rouge2_scores_ref) / len(rouge2_scores_ref)
@@ -169,16 +189,19 @@ avg_rouge2_llm = sum(rouge2_scores_llm) / len(rouge2_scores_llm)
 avg_rougeL_llm = sum(rougeL_scores_llm) / len(rougeL_scores_llm)
 avg_bleu_llm = sum(bleu_scores_llm) / len(bleu_scores_llm)
 
-print("\nScores moyens d'évaluation (Modèle vs Référence) :")
-print(f"ROUGE-1: {avg_rouge1_ref:.4f}")
-print(f"ROUGE-2: {avg_rouge2_ref:.4f}")
-print(f"ROUGE-L: {avg_rougeL_ref:.4f}")
-print(f"BLEU: {avg_bleu_ref:.4f}")
+log("\nScores moyens d'évaluation (Modèle vs Référence) :")
+log(f"ROUGE-1: {avg_rouge1_ref:.4f}")
+log(f"ROUGE-2: {avg_rouge2_ref:.4f}")
+log(f"ROUGE-L: {avg_rougeL_ref:.4f}")
+log(f"BLEU: {avg_bleu_ref:.4f}")
 
-print("\nScores moyens d'évaluation (Modèle vs LLM) :")
-print(f"ROUGE-1: {avg_rouge1_llm:.4f}")
-print(f"ROUGE-2: {avg_rouge2_llm:.4f}")
-print(f"ROUGE-L: {avg_rougeL_llm:.4f}")
-print(f"BLEU: {avg_bleu_llm:.4f}")
+log("\nScores moyens d'évaluation (Modèle vs LLM) :")
+log(f"ROUGE-1: {avg_rouge1_llm:.4f}")
+log(f"ROUGE-2: {avg_rouge2_llm:.4f}")
+log(f"ROUGE-L: {avg_rougeL_llm:.4f}")
+log(f"BLEU: {avg_bleu_llm:.4f}")
 
-print("\nÉvaluation terminée.")
+log("\nÉvaluation terminée.")
+
+# Fermer le fichier de log
+log_file.close()

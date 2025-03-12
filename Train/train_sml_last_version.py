@@ -1,5 +1,6 @@
 import os
 import torch
+import argparse
 from datasets import Dataset
 from transformers import (
     T5ForConditionalGeneration,
@@ -11,8 +12,8 @@ from transformers import (
 )
 from peft import get_peft_model, LoraConfig, TaskType
 import pandas as pd
-
 from evaluate import load
+
 rouge = load("rouge")
 
 # Détection du device (GPU si disponible)
@@ -20,9 +21,17 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Initialisation...")
 print("Device :", device)
 
+# Argument parser pour le chemin de sauvegarde du modèle
+parser = argparse.ArgumentParser(description="Fine-tune T5 model for text summarization.")
+parser.add_argument("--save_path", type=str, default="./outputs/models/finetuned_sml", help="Chemin de sauvegarde du modèle fine-tuné")
+parser.add_argument("--model_name", type=str, default="t5-base", help="Modele de base à utiliser")
+parser.add_argument("--nb_epochs", type=int, default=4, help="Nombre d'epochs d'entraînement")
+parser.add_argument("--summary_type", type=str, default="reference_summary", help="Souhaitez-vous utiliser: generated_summary/reference_summary ")
+args = parser.parse_args()
+
 # Paramètres et chemins
 TOTAL_MAX_ROWS = 5000
-DATA_DIR = "./cleaned_files_llm/"  # Dossier contenant les fichiers CSV
+DATA_DIR = "./data/cleaned_files_llm/"  # Dossier contenant les fichiers CSV
 
 # Préfixe détaillé utilisé pour l'entraînement ET l'inférence
 DETAILED_PREFIX = (
@@ -31,14 +40,10 @@ DETAILED_PREFIX = (
     "Texte : "
 )
 
-
 def compute_metrics(eval_pred):
     predictions, labels = eval_pred
-    # Décodage des prédictions et labels
     decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
     decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
-    
-    # Calcul de la métrique rouge
     result = rouge.compute(predictions=decoded_preds, references=decoded_labels)
     rougeL = result["rougeL"]
     return {"eval_rougeL": rougeL}
@@ -54,8 +59,7 @@ def load_all_corpus_csv(data_dir, total_max_rows=TOTAL_MAX_ROWS):
         file_path = os.path.join(data_dir, filename)
         df = pd.read_csv(file_path)
         texts.extend(df["text"].tolist())
-        summaries.extend(df["generated_summary"].tolist())
-    # Limiter le nombre total de lignes si nécessaire
+        summaries.extend(df[args.summary_type].tolist())
     if total_max_rows is not None:
         texts = texts[:total_max_rows]
         summaries = summaries[:total_max_rows]
@@ -65,7 +69,7 @@ def load_all_corpus_csv(data_dir, total_max_rows=TOTAL_MAX_ROWS):
     })
 
 # Chargement du modèle T5 et de son tokenizer
-model_name = "t5-base"
+model_name = args.model_name#"t5-base"
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 model.to(device)
@@ -115,7 +119,7 @@ training_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=4,
     weight_decay=0.01,
     save_total_limit=2,
-    num_train_epochs=4,
+    num_train_epochs=args.nb_epochs,
     predict_with_generate=True,
     fp16=torch.cuda.is_available(),
     logging_dir='./logs',
@@ -145,7 +149,9 @@ trainer = Seq2SeqTrainer(
 print("Entraînement en cours...")
 trainer.train()
 
-# Sauvegarde du modèle fine-tuné et du tokenizer
-trainer.save_model("./finetuned_sml_V4_llm")
-tokenizer.save_pretrained("./finetuned_sml_V4_llm")
+# Sauvegarde du modèle fine-tuné et du tokenizer avec le chemin fourni en argument
+print(f"Sauvegarde du modèle dans : {args.save_path}")
+trainer.save_model(args.save_path)
+tokenizer.save_pretrained(args.save_path)
+
 print("Fine-tuning terminé et modèle sauvegardé.")
