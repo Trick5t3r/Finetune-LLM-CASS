@@ -9,7 +9,7 @@ TOTAL_MAX_ROWS = 100
 
 # Utiliser le modèle original (celui utilisé dans train_sml_5.py) : t5-base
 MODEL_NAME = "t5-base"  
-DATA_DIR = "./cleaned_files_llm/"
+DATA_DIR = "../data/cleaned_files_llm/"
 
 print("\nChargement du modèle original...")
 model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)

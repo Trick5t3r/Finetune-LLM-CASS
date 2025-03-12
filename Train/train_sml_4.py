@@ -19,7 +19,7 @@ print("Initialisation...")
 # Paramètres et chemins
 NUMBER_OF_FILES = 100
 NUMBER_OF_FILES_TEST = 10
-DATA_DIR = "./cleaned_files/"
+DATA_DIR = "./data/cleaned_files/"
 
 # Préfixe détaillé utilisé pour l'entraînement ET l'inférence
 DETAILED_PREFIX = (

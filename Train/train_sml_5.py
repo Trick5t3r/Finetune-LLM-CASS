@@ -22,7 +22,7 @@ print("Device :", device)
 
 # Paramètres et chemins
 TOTAL_MAX_ROWS = 5000
-DATA_DIR = "./cleaned_files_llm/"  # Dossier contenant les fichiers CSV
+DATA_DIR = "./data/cleaned_files_llm/"  # Dossier contenant les fichiers CSV
 
 # Préfixe détaillé utilisé pour l'entraînement ET l'inférence
 DETAILED_PREFIX = (
