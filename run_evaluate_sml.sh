@@ -23,7 +23,7 @@ for nb_epoch in "${nb_epochs[@]}"; do
             # Vérifier si le répertoire du modèle existe avant de lancer l'évaluation
             if [ -d "$model_dir" ]; then
                 echo "Lancement de l'évaluation pour $model_name, $nb_epoch epochs, $summary_type..." | tee -a log_eval_global.txt
-                nohup python Evaluate/evaluate.py --model_dir "$model_dir" > "$log_file" 2>&1
+                nohup python Evaluate/evaluate_sml.py --model_dir "$model_dir" > "$log_file" 2>&1
                 echo "Fin de l'évaluation pour $model_name, $nb_epoch epochs, $summary_type." | tee -a log_eval_global.txt
             else
                 echo "Modèle introuvable : $model_dir. Passage au suivant..." | tee -a log_eval_global.txt
