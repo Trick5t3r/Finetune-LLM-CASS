@@ -20,6 +20,7 @@ for nb_epoch in "${nb_epochs[@]}"; do
             # Définir le chemin de sauvegarde en fonction des paramètres
             save_path="./outputs/models/finetuned_sml_${nb_epoch}_${summary_type}_${safe_model_name}"
             log_file="log_train_${nb_epoch}_${summary_type}_${safe_model_name}.txt"
+
             
             # Exécuter la commande en séquentiel
             echo "Lancement de l'entraînement avec $model_name, $nb_epoch epochs, $summary_type..." | tee -a log_train_global.txt

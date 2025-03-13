@@ -52,6 +52,4 @@ python evaluate.py --model fine_tuned_model --dataset data/test
 - Théo LE PENDEVEN
 
 ## 🔗 References
-- [Hugging Face Transformers](https://huggingface.co/transformers/)
-- [Google Colab](https://colab.research.google.com/)
-- [AWQ Quantization](https://github.com/mit-han-lab/llm-awq)
+- [CASS Dataset](https://www.data.gouv.fr/fr/datasets/cass/)
