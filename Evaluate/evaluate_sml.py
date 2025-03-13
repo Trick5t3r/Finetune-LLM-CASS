@@ -12,7 +12,7 @@ TOTAL_MAX_ROWS_DEFAULT = 100
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_dir", type=str, required=True, help="Chemin du modèle fine-tuné")
 parser.add_argument("--total_max_rows", type=str, default= TOTAL_MAX_ROWS_DEFAULT, help="Nombre de tests")
-parser.add_argument("--data_dir", type=str, default="../data/cleaned_files_llm/", help="Dossier contenant les fichiers CSV")
+parser.add_argument("--data_dir", type=str, default="./data/cleaned_files_llm/", help="Dossier contenant les fichiers CSV")
 args = parser.parse_args()
 
 MODEL_DIR = args.model_dir
@@ -21,7 +21,7 @@ TOTAL_MAX_ROWS = args.total_max_rows
 
 # Créer un fichier de log basé sur le nom du modèle
 model_name = os.path.basename(os.path.normpath(MODEL_DIR))
-log_filename = f"/outputs/results/{model_name}_benchmarks.txt"
+log_filename = f"./outputs/results/{model_name}_benchmarks.txt"
 log_file = open(log_filename, "w", encoding="utf-8")
 
 
