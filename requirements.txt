@@ -11,3 +11,4 @@ rouge-score
 sentencepiece
 datasets
 transformers
+bert_score
