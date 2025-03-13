@@ -1,2 +1,3 @@
 .venv/
 data/cleaned_files_llm/
+outputs/models/
