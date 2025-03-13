@@ -11,7 +11,7 @@ TOTAL_MAX_ROWS_DEFAULT = 100
 # Argument parser pour récupérer le chemin du modèle depuis la ligne de commande
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_dir", type=str, required=True, help="Chemin du modèle fine-tuné")
-parser.add_argument("--total_max_rows", type=str, default= TOTAL_MAX_ROWS_DEFAULT, help="Nombre de tests")
+parser.add_argument("--total_max_rows", type=int, default= TOTAL_MAX_ROWS_DEFAULT, help="Nombre de tests")
 parser.add_argument("--data_dir", type=str, default="./data/cleaned_files_llm/", help="Dossier contenant les fichiers CSV")
 args = parser.parse_args()
 
