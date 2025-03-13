@@ -44,7 +44,7 @@ python Train/train_sml_last_version.py --model_name t5-base --nb_epoch 4 --summa
 ### 3️⃣ Evaluate the model
 After training, evaluate performance:
 ```bash
-python evaluate.py --model fine_tuned_model --dataset data/test
+python Evaluate/evaluate_sml.py --model fine_tuned_model --dataset data/test
 ```
 
 ## Contributor
